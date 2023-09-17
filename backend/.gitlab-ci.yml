@@ -4,6 +4,10 @@ stages:
   - build
   - test
 
+cache:
+  paths:
+    - backend/node_modules/
+
 backend_build:
   stage: build
   script:
@@ -15,3 +19,9 @@ backend_test:
   script:
     - cd backend
     - npm test
+
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - junit.xml
