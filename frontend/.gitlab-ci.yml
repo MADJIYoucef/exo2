@@ -18,7 +18,7 @@ frontend_test:
   stage: test
   script:
     - cd frontend
-    - CI-true npm test
+    - CI=true npm test
   artifacts:
     when: always
     reports:
