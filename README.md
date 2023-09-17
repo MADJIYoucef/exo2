@@ -99,20 +99,21 @@ npx create-react-app frontend
    npm install express
    ```
 
-- Create a file named `server.js` in the `backend` directory with the following content:
+- Create a file named `app.js` in the `backend` directory with the following content:
 
    ```javascript
-   const express = require('express');
-   const app = express();
-   const port = process.env.PORT || 3001;
+    const express = require('express');
+    const app = express();
+    const port = process.env.PORT || 3000;
 
-   app.get('/', (req, res) => {
-     res.json({ message: 'Hello, Backend!' });
-   });
+    app.get('/', (req, res) => {
+    res.json({ message: 'Hello, World!' });
+    });
 
-   app.listen(port, () => {
-     console.log(`Server is running on port ${port}`);
-   });
+    const server = app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+    });
+    module.exports = { app, server };
    ```
 
 - In the `backend` directory, create a `.gitlab-ci.yml` file with the following content:
@@ -171,3 +172,67 @@ include:
 
     As you become more comfortable with GitLab CI/CD, explore advanced features such as deploying to different environments (e.g., staging and production), using environment variables, and integrating with external services like databases.
 
+11. Resolve tests errors:
+
+To resolve this error, make sure you're importing the Express app correctly in your test file (`app.test.js`). Ensure that you're exporting the app correctly from your `app.js` file and importing it properly in the test file.
+
+Here are some steps to help you troubleshoot and resolve this issue:
+
+**1. Verify Export in `app.js`:**
+
+In your `app.js` file, ensure that you are exporting your Express app correctly. It should look something like this:
+
+```javascript
+const express = require('express');
+const app = express();
+const port = process.env.PORT || 3000;
+
+app.get('/', (req, res) => {
+  res.json({ message: 'Hello, World!' });
+});
+
+const server = app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
+
+module.exports = { app, server };
+```
+
+**2. Check Import in `app.test.js`:**
+
+In your `app.test.js` file, ensure that you are importing the Express app correctly. The import path should be relative to the location of your test file:
+
+```javascript
+const request = require('supertest');
+const { app, server } = require('../app');
+
+describe('Express App Tests', () => {
+  beforeAll((done) => {
+    server.on('listening', () => {
+      done();
+    });
+  });
+
+  afterAll((done) => {
+    server.close(() => {
+      done();
+    });
+  });
+
+  it('should respond with a JSON message containing "Hello, World!"', async () => {
+    const response = await request(app).get('/');
+    expect(response.status).toBe(200);
+    expect(response.body.message).toBe('Hello, World!');
+  });
+});
+```
+
+Ensure that the path to your `app.js` file is correct relative to your test file's location.
+
+**3. Verify Application Structure:**
+
+Double-check the directory structure of your project to ensure that the `app.js` file and the `app.test.js` file are in the correct locations and that there are no typos in the filenames.
+
+**4. Run Tests:**
+
+After making sure the imports are correct, try running your tests again using `npm test`. The error should be resolved, and your tests should execute without issues.

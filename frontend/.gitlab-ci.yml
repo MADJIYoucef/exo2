@@ -10,9 +10,17 @@ frontend_build:
     - cd frontend
     - npm install
     - npm run build
+  artifacts:
+    paths:
+      - frontend/build
 
 frontend_test:
   stage: test
   script:
     - cd frontend
-    - npm test
+    - CI-true npm test
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - junit.xml
