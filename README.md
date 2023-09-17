@@ -43,7 +43,7 @@
 - In the `frontend` directory, create a new React application:
 
 ```bash
-npx create-react-app my-frontend
+npx create-react-app frontend
 ```
 
 - Replace the content of `src/App.js` with the following:
