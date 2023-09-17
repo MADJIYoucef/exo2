@@ -1,21 +1,22 @@
-const chai = require('chai');
-const chaiHttp = require('chai-http');
-const app = require('../server'); // Import your Express app (adjust the path)
+const request = require('supertest');
+const { app, server } = require('../app');
 
-const expect = chai.expect;
-
-chai.use(chaiHttp);
-
-describe('Express Server Tests', () => {
-  it('should respond with a JSON message containing "Hello, Backend!"', (done) => {
-    chai.request(app)
-      .get('/')
-      .end((err, res) => {
-        expect(res).to.have.status(200);
-        expect(res.body.message).to.equal('Hello, Backend!');
-        done();
-      });
+describe('Express App Tests', () => {
+  beforeAll((done) => {
+    server.on('listening', () => {
+      done();
+    });
   });
 
-  // Add more unit tests for different routes and functionality
+  afterAll((done) => {
+    server.close(() => {
+      done();
+    });
+  });
+
+  it('should respond with a JSON message containing "Hello, World!"', async () => {
+    const response = await request(app).get('/');
+    expect(response.status).toBe(200);
+    expect(response.body.message).toBe('Hello, World!');
+  });
 });

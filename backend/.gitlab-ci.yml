@@ -4,10 +4,6 @@ stages:
   - build
   - test
 
-cache:
-  paths:
-    - backend/node_modules/
-
 backend_build:
   stage: build
   script:
