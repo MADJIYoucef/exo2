@@ -7,9 +7,11 @@ stages:
 backend_build:
   stage: build
   script:
+    - cd backend
     - npm install
 
 backend_test:
   stage: test
   script:
+    - cd backend
     - npm test
