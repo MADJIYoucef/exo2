@@ -1,0 +1,15 @@
+image: node:14
+
+stages:
+  - build
+  - test
+
+backend_build:
+  stage: build
+  script:
+    - npm install
+
+backend_test:
+  stage: test
+  script:
+    - npm test

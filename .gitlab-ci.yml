@@ -1,0 +1,11 @@
+image: node:14
+
+stages:
+  - frontend_build
+  - frontend_test
+  - backend_build
+  - backend_test
+
+include:
+  - local: frontend/.gitlab-ci.yml
+  - local: backend/.gitlab-ci.yml
