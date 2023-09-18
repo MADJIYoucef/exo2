@@ -8,6 +8,7 @@ backend_build:
   stage: build
   script:
     - cd backend
+    - npm install --save-dev jest supertest
     - npm install
 
 backend_test:
