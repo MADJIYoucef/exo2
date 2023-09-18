@@ -7,7 +7,7 @@
 1. Access to a GitLab account or instance.
 2. A GitLab project.
 3. Basic knowledge of Git and GitLab CI/CD.
-3. install nodejs
+3. Install nodejs
 
 **Instructions:**
 
@@ -25,11 +25,13 @@
    │   ├── src/
    │   │   ├── ... (React frontend source files)
    │   ├── package.json
+   │   ├── .gitlab-ci.yml
    │   ├── ...
    ├── backend/
    │   ├── src/
    │   │   ├── ... (Node.js backend source files)
    │   ├── package.json
+   │   ├── .gitlab-ci.yml
    │   ├── ...
    ├── .gitlab-ci.yml
    ```
@@ -70,22 +72,30 @@ npx create-react-app frontend
    ```yaml
    image: node:14
 
-   stages:
-     - build
-     - test
+    stages:
+    - build
+    - test
 
-   frontend_build:
-     stage: build
-     script:
-       - cd my-frontend
-       - npm install
-       - npm run build
-
-   frontend_test:
-     stage: test
-     script:
-       - cd my-frontend
-       - npm test
+    frontend_build:
+    stage: build
+    script:
+        - cd frontend
+        - npm install
+        - npm run build
+    artifacts:
+        paths:
+        - frontend/build
+    
+    frontend_test:
+    stage: test
+    script:
+        - cd frontend
+        - CI=true npm test
+    artifacts:
+        when: always
+        reports:
+        junit:
+            - junit.xml
    ```
 
 **Backend (`backend` directory):**
@@ -93,8 +103,8 @@ npx create-react-app frontend
 - In the `backend` directory, create a Node.js application and install Express:
 
    ```bash
-   mkdir my-backend
-   cd my-backend
+   mkdir backend
+   cd backend
    npm init -y
    npm install express
    ```
@@ -119,21 +129,28 @@ npx create-react-app frontend
 - In the `backend` directory, create a `.gitlab-ci.yml` file with the following content:
 
    ```yaml
-   image: node:14
+    image: node:14
+    stages:
+        - build
+        - test
 
-   stages:
-     - build
-     - test
+    backend_build:
+    stage: build
+    script:
+        - cd backend
+        - npm install --save-dev jest supertest
+        - npm install
 
-   backend_build:
-     stage: build
-     script:
-       - npm install
-
-   backend_test:
-     stage: test
-     script:
-       - npm test
+    backend_test:
+    stage: test
+    script:
+        - cd backend
+        - npm test
+    artifacts:
+        when: always
+        reports:
+        junit:
+            - junit.xml
    ```
 
 **Root Directory (`.gitlab-ci.yml` for full application):**
@@ -144,10 +161,8 @@ In the root directory of your project, create a `.gitlab-ci.yml` file with the f
 image: node:14
 
 stages:
-  - frontend_build
-  - frontend_test
-  - backend_build
-  - backend_test
+  - build
+  - test
 
 include:
   - local: frontend/.gitlab-ci.yml
@@ -159,8 +174,8 @@ include:
    Add the `.gitlab-ci.yml` file to your Git repository, commit it, and push the changes:
 
    ```bash
-   git add .gitlab-ci.yml
-   git commit -m "Add .gitlab-ci.yml"
+   git add .
+   git commit -m "Initial commit"
    git push origin master  # Or your branch name
    ```
 
