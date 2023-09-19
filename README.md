@@ -76,26 +76,26 @@ npx create-react-app frontend
     - build
     - test
 
-    frontend_build:
-    stage: build
-    script:
-        - cd frontend
-        - npm install
-        - npm run build
-    artifacts:
-        paths:
-        - frontend/build
-    
-    frontend_test:
-    stage: test
-    script:
-        - cd frontend
-        - CI=true npm test
-    artifacts:
-        when: always
-        reports:
-        junit:
-            - junit.xml
+   frontend_build:
+      stage: build
+      script:
+         - cd frontend
+         - npm install
+         - npm run build
+      artifacts:
+         paths:
+            - frontend/build
+
+   frontend_test:
+      stage: test
+      script:
+         - cd frontend
+         - CI=true npm test
+      artifacts:
+         when: always
+         reports:
+            junit:
+               - junit.xml
    ```
 
 **Backend (`backend` directory):**
@@ -129,28 +129,28 @@ npx create-react-app frontend
 - In the `backend` directory, create a `.gitlab-ci.yml` file with the following content:
 
    ```yaml
-    image: node:14
-    stages:
-        - build
-        - test
+   image: node:14
+   stages:
+      - build
+      - test
 
-    backend_build:
-    stage: build
-    script:
-        - cd backend
-        - npm install --save-dev jest supertest
-        - npm install
+   backend_build:
+      stage: build
+      script:
+         - cd backend
+         - npm install --save-dev jest supertest
+         - npm install
 
-    backend_test:
-    stage: test
-    script:
-        - cd backend
-        - npm test
-    artifacts:
-        when: always
-        reports:
-        junit:
-            - junit.xml
+   backend_test:
+      stage: test
+       script:
+           - cd backend
+           - npm test
+      artifacts:
+         when: always
+         reports:
+            junit:
+               - junit.xml
    ```
 
 **Root Directory (`.gitlab-ci.yml` for full application):**
